@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import curses
+import os
 import time
 
 from box import Box
+from utils import load_yaml
 
 
 def main(screen):
@@ -13,28 +15,28 @@ def main(screen):
     # Hide the cursor.
     curses.curs_set(0)
 
-    box1 = Box(
-        screen=screen,
-        height=2,
-        width=3,
-        text='\n   Top left box.',
-    )
+    # Load config from file.
+    config = load_yaml(os.path.expanduser('~/.suave/config.yml'))
 
-    box2 = Box(
-        screen=screen,
-        height=2,
-        width=3,
-        origin_y=4,
-        origin_x=9,
-        text='\n   Bottom right box.',
-    )
+    # Create boxes from config.
+    boxes = []
+    for box in config:
+        boxes.append(
+            Box(
+                screen=screen,
+                height=box['height'],
+                width=box['width'],
+                origin_y=box['y-origin'],
+                origin_x=box['x-origin'],
+                text='\n   %s' % box['contents'],
+            )
+        )
 
     while True:
-        # Re/draw the screen and box.
+        # Re/draw the screen and boxes.
         screen.erase()
         screen.refresh()
-        box1.refresh()
-        box2.refresh()
+        [box.refresh() for box in boxes]
 
         # Wait before redrawing again.
         time.sleep(1)
