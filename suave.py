@@ -28,7 +28,7 @@ def main(screen):
                 width=box['width'],
                 origin_y=box['y-origin'],
                 origin_x=box['x-origin'],
-                text='\n   %s' % box['contents'],
+                contents=box['contents'],
             )
         )
 

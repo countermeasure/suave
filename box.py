@@ -1,4 +1,5 @@
 import curses
+import subprocess
 
 from grid import Grid
 
@@ -9,7 +10,7 @@ class Box(object):
     """
 
     def __init__(self, screen, height, width, origin_y=0, origin_x=0,
-                 text=None):
+                 contents=None):
         # Set box colors.
         foreground = curses.COLOR_BLACK
         background = curses.COLOR_WHITE
@@ -22,7 +23,7 @@ class Box(object):
         self.width = width
         self.origin_y = origin_y
         self.origin_x = origin_x
-        self.text = text
+        self.contents = contents
 
         # Create the box and set its colors.
         self.box = curses.newwin(
@@ -32,7 +33,7 @@ class Box(object):
             self.grid.origin_x(self.origin_x)
         )
         self.box.bkgdset(ord(' '), curses.color_pair(1))
-        self.box.addstr(self.text)
+        self.box.addstr(subprocess.check_output(self.contents, shell=True))
 
     def refresh(self):
         """
@@ -49,5 +50,5 @@ class Box(object):
         self.box.erase()
         self.box.mvwin(origin_y, origin_x)
         self.box.resize(height, width)
-        self.box.addstr(self.text)
+        self.box.addstr(subprocess.check_output(self.contents, shell=True))
         self.box.refresh()
