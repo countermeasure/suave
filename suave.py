@@ -7,29 +7,34 @@ from box import Box
 
 
 def main(screen):
+    """
+    Draws and redraws the screen.
+    """
     # Hide the cursor.
     curses.curs_set(0)
 
-    # Create the box.
-    width = 40
-    height = 9
-    text_padding = '%s' % ('\n' * (height / 2))
-    text_body = '{:^{width}}'.format(
-        'This is how SUAVE begins.',
-        width=width
-    )
-    box = Box(
+    box1 = Box(
         screen=screen,
-        height=height,
-        width=width,
-        text='%s%s' % (text_padding, text_body)
+        height=2,
+        width=3,
+        text='\n   Top left box.',
+    )
+
+    box2 = Box(
+        screen=screen,
+        height=2,
+        width=3,
+        origin_y=4,
+        origin_x=9,
+        text='\n   Bottom right box.',
     )
 
     while True:
         # Re/draw the screen and box.
         screen.erase()
         screen.refresh()
-        box.refresh()
+        box1.refresh()
+        box2.refresh()
 
         # Wait before redrawing again.
         time.sleep(1)

@@ -1,7 +1,12 @@
 import curses
 
+from grid import Grid
+
 
 class Box(object):
+    """
+    Manages the drawing and refreshing of boxes.
+    """
 
     def __init__(self, screen, height, width, origin_y=0, origin_x=0,
                  text=None):
@@ -12,6 +17,7 @@ class Box(object):
 
         # Set attributes.
         self.screen = screen
+        self.grid = Grid(screen)
         self.height = height
         self.width = width
         self.origin_y = origin_y
@@ -19,19 +25,29 @@ class Box(object):
         self.text = text
 
         # Create the box and set its colors.
-        self.box = curses.newwin(height, width, origin_y, origin_x)
+        self.box = curses.newwin(
+            self.grid.height(self.height),
+            self.grid.width(self.width),
+            self.grid.origin_y(self.origin_y),
+            self.grid.origin_x(self.origin_x)
+        )
         self.box.bkgdset(ord(' '), curses.color_pair(1))
         self.box.addstr(self.text)
 
     def refresh(self):
-        # Get current screen size.
-        screen_width = self.screen.getmaxyx()[1]
-        screen_height = self.screen.getmaxyx()[0]
-        # Calculate the corner location so the box is centred.
-        origin_x = (screen_width - self.width) / 2
-        origin_y = (screen_height - self.height) / 2
+        """
+        Rerenders the box.
+        """
+        # Refresh the grid and re-calculate the box's size and position.
+        self.grid.refresh()
+        height = self.grid.height(self.height)
+        width = self.grid.width(self.width)
+        origin_x = self.grid.origin_x(self.origin_x)
+        origin_y = self.grid.origin_y(self.origin_y)
+
         # Refresh the box.
         self.box.erase()
         self.box.mvwin(origin_y, origin_x)
+        self.box.resize(height, width)
         self.box.addstr(self.text)
         self.box.refresh()
