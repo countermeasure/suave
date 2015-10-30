@@ -28,7 +28,9 @@ def main(screen):
                 width=box['width'],
                 origin_y=box['y-origin'],
                 origin_x=box['x-origin'],
-                contents=box['contents'],
+                command=box['command'],
+                interval=box['interval'],
+
             )
         )
 

@@ -1,6 +1,11 @@
 import curses
 import subprocess
 
+from datetime import (
+    datetime,
+    timedelta,
+)
+
 from grid import Grid
 
 
@@ -10,7 +15,7 @@ class Box(object):
     """
 
     def __init__(self, screen, height, width, origin_y=0, origin_x=0,
-                 contents=None):
+                 command=None, interval=None):
         # Set box colors.
         foreground = curses.COLOR_BLACK
         background = curses.COLOR_WHITE
@@ -23,7 +28,8 @@ class Box(object):
         self.width = width
         self.origin_y = origin_y
         self.origin_x = origin_x
-        self.contents = contents
+        self.command = command
+        self.interval = interval
 
         # Create the box and set its colors.
         self.box = curses.newwin(
@@ -32,8 +38,12 @@ class Box(object):
             self.grid.origin_y(self.origin_y),
             self.grid.origin_x(self.origin_x)
         )
+        self.contents = subprocess.check_output(self.command, shell=True)
+        self.box.addstr(self.contents)
         self.box.bkgdset(ord(' '), curses.color_pair(1))
-        self.box.addstr(subprocess.check_output(self.contents, shell=True))
+
+        # Schedule the next refresh of the box's contents.
+        self.next_refresh = datetime.now() + timedelta(seconds=self.interval)
 
     def refresh(self):
         """
@@ -46,9 +56,14 @@ class Box(object):
         origin_x = self.grid.origin_x(self.origin_x)
         origin_y = self.grid.origin_y(self.origin_y)
 
+        # Only refresh the contents after waiting for the specified interval.
+        if self.next_refresh <= datetime.now():
+            self.contents = subprocess.check_output(self.command, shell=True)
+            self.next_refresh += timedelta(seconds=self.interval)
+
         # Refresh the box.
         self.box.erase()
         self.box.mvwin(origin_y, origin_x)
         self.box.resize(height, width)
-        self.box.addstr(subprocess.check_output(self.contents, shell=True))
+        self.box.addstr(self.contents)
         self.box.refresh()
