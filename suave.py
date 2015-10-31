@@ -24,10 +24,10 @@ def main(screen):
         boxes.append(
             Box(
                 screen=screen,
-                height=box['height'],
-                width=box['width'],
-                origin_y=box['y-origin'],
-                origin_x=box['x-origin'],
+                rows=box['rows'],
+                columns=box['columns'],
+                rows_offset=box['rows-offset'],
+                columns_offset=box['columns-offset'],
                 command=box['command'],
                 interval=box['interval'],
 

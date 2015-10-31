@@ -19,31 +19,39 @@ class Grid(object):
             (screen_height - (gutter_width * (self.no_rows + 1))) / 6
         )
 
-    def origin_y(self, y):
+    def y_offset(self, rows_offset):
         """
         Returns the y-origin point measured in lines.
         """
-        return (self.gutter_width + ((self.row_height + self.gutter_width) * y))
-
-    def origin_x(self, x):
-        """
-        Returns the y-origin point measured in characters.
-        """
         return (
-            self.gutter_width + ((self.column_width + self.gutter_width) * x)
+            self.gutter_width + (
+                (self.row_height + self.gutter_width) * rows_offset
+            )
         )
 
-    def height(self, height):
+    def x_offset(self, columns_offset):
+        """
+        Returns the x-origin point measured in characters.
+        """
+        return (
+            self.gutter_width + (
+                (self.column_width + self.gutter_width) * columns_offset
+            )
+        )
+
+    def height(self, rows):
         """
         Returns the height point measured in lines.
         """
-        return ((self.row_height * height) + ((self.gutter_width - 1) * height))
+        return ((self.row_height * rows) + (self.gutter_width * (rows - 1)))
 
-    def width(self, width):
+    def width(self, columns):
         """
         Returns the width point measured in characters.
         """
-        return ((self.column_width * width) + ((self.gutter_width - 1) * width))
+        return (
+            (self.column_width * columns) + (self.gutter_width * (columns - 1))
+        )
 
     def refresh(self):
         """
@@ -51,6 +59,7 @@ class Grid(object):
         """
         screen_width = self.screen.getmaxyx()[1]
         screen_height = self.screen.getmaxyx()[0]
+
         self.column_width = (
             (screen_width - (self.gutter_width * (self.no_columns + 1))) / 12
         )
