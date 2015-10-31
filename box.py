@@ -40,8 +40,7 @@ class Box(object):
         """
         Re-renders the box.
         """
-        # Refresh the grid and re-calculate the box's size and position.
-        self.grid.refresh()
+        # Re-calculate the box's size and position.
         height = self.grid.height(self.rows)
         width = self.grid.width(self.columns)
         x_offset = self.grid.x_offset(self.columns_offset)
