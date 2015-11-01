@@ -1,0 +1,65 @@
+---
+  # Each box which SUAVE displays is defined by a YAML object in this format:
+  # - label: {string} A description of the box's contents.
+  #   columns: {integer from 1 to 12} Box width. SUAVE has a 12 column grid.
+  #   rows: {integer from 1 to 6} Box height. SUAVE has a 6 row grid.
+  #   columns-offset: {integer from 0 to 11} Offset from left of window.
+  #   rows-offset: {integer from 0 to 5} Offset from top of window.
+  #   command: {string} A shell command which will produce the box's contents.
+  #   interval: {integer > 0} Box contents refresh interval in seconds.
+
+  - label: Hello
+    columns: 3
+    rows: 1
+    columns-offset: 0
+    rows-offset: 0
+    command: echo "\n  So, this is SUAVE."
+    interval: 3600
+
+  - label: Grid
+    columns: 3
+    rows: 1
+    columns-offset: 1
+    rows-offset: 1
+    command: >
+        echo "
+        \n  You can put a box anywhere in your
+        \n  terminal on a 12 x 6 responsive grid.
+        "
+    interval: 3600
+
+  - label: Config
+    columns: 3
+    rows: 1
+    columns-offset: 2
+    rows-offset: 2
+    command: echo "\n  Just edit the config file at:\n  ~/.suave/config.yml"
+    interval: 3600
+
+  - label: Examples
+    columns: 2
+    rows: 1
+    columns-offset: 3
+    rows-offset: 4
+    command: echo "\n\n\n  Some examples -->"
+    interval: 3600
+
+  - label: Time
+    columns: 6
+    rows: 1
+    columns-offset: 6
+    rows-offset: 0
+    command: >
+        echo "\nTime: updating every second\n---------------------------\n";
+        date +"%T"
+    interval: 1
+
+  - label: Top
+    columns: 6
+    rows: 5
+    columns-offset: 6
+    rows-offset: 1
+    command: >
+        echo "\nTop: updating every 5 seconds\n-----------------------------\n";
+        top -b -n 1
+    interval: 5
