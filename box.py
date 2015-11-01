@@ -48,7 +48,14 @@ class Box(object):
 
         # Only refresh the contents after waiting for the specified interval.
         if self.next_refresh <= datetime.now():
-            self.contents = subprocess.check_output(self.command, shell=True)
+            try:
+                self.contents = subprocess.check_output(
+                    self.command,
+                    shell=True
+                )
+            except:
+                self.contents = '\n   There was a problem running this ' + \
+                    'window\'s command.'
 
             # Calculate the height the pad needs to be to fit the contents.
             lines = self.contents.splitlines()
