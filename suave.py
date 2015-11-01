@@ -36,7 +36,7 @@ def main(screen):
 
     while True:
         # Re/draw the screen and boxes.
-        screen.erase()
+        screen.clear()
         screen.refresh()
         [box.refresh() for box in boxes]
 
