@@ -35,10 +35,13 @@ def main(screen):
         )
 
     while True:
-        # Re/draw the screen and boxes.
-        screen.clear()
-        screen.refresh()
-        [box.refresh() for box in boxes]
+        # Redraw the screen only when it changes.
+        if screen.is_wintouched():
+            screen.clear()
+            screen.refresh()
+
+        # Give every box an opportunity to redraw if it has changed.
+        [box.redraw_if_changed() for box in boxes]
 
         # Wait before redrawing again.
         time.sleep(1)

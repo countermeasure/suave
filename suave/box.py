@@ -36,9 +36,9 @@ class Box(object):
         self.box = curses.newpad(1, 1)
         self.next_refresh = datetime.now()
 
-    def refresh(self):
+    def redraw_if_changed(self):
         """
-        Re-renders the box.
+        Redraws the box if it has changed.
         """
         # Re-calculate the box's size and position.
         height = self.grid.height(self.rows)
@@ -82,13 +82,15 @@ class Box(object):
         self.box.bkgdset(ord(' '), curses.color_pair(1))
         self.box.erase()
         self.box.addstr(self.contents)
-        # Subtract 1 from height and width to allow for column and row
-        # numbering starting at 0.
-        self.box.refresh(
-            0,
-            0,
-            y_offset,
-            x_offset,
-            y_offset + (height - 1),
-            x_offset + (width - 1)
-        )
+        # Only refresh the box if it has changed since the last refresh.
+        if self.box.is_wintouched():
+            # Subtract 1 from height and width to allow for column and row
+            # numbering starting at 0.
+            self.box.refresh(
+                0,
+                0,
+                y_offset,
+                x_offset,
+                y_offset + (height - 1),
+                x_offset + (width - 1)
+            )
