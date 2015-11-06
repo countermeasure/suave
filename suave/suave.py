@@ -2,7 +2,6 @@
 
 import curses
 import os
-import time
 
 from box import Box
 from utils import load_yaml
@@ -44,7 +43,7 @@ def main(screen):
         [box.redraw_if_changed() for box in boxes]
 
         # Wait before redrawing again.
-        time.sleep(1)
+        curses.napms(1000)
 
 
 curses.wrapper(main)
