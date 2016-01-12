@@ -4,6 +4,7 @@
 import ftplib
 import re
 
+from socket import gaierror
 from urlparse import urlparse
 
 
@@ -12,16 +13,18 @@ def get_ftp_page(url):
     Retrieves a page from an ftp server.
     Returns the page's contents as a list of its lines.
     """
+    try:
+        u = urlparse(url)
+        ftp = ftplib.FTP(host=u.netloc, timeout=10)
 
-    u = urlparse(url)
-    ftp = ftplib.FTP(host=u.netloc, timeout=10)
+        ftp.login()
+        page = []
+        ftp.retrlines('RETR %s' % u.path, page.append)
+        ftp.quit()
 
-    ftp.login()
-    page = []
-    ftp.retrlines('RETR %s' % u.path, page.append)
-    ftp.quit()
-
-    return page
+        return page
+    except gaierror:
+        raise
 
 
 def parse_temperature(temp_line):
@@ -52,17 +55,19 @@ def parse_rainfall(rain_line):
 
 
 if __name__ == "__main__":
-    # Get the raw data from the Bureau Of Meteorology.
-    page = get_ftp_page('ftp://ftp2.bom.gov.au/anon/gen/fwo/IDA00101.html')
-
-    # Check that this page contains the the data for Melbourne.
-    header_regex = re.compile('Link to latest weather for Melbourne area')
-    if header_regex.search(page[18]):
-        print '\n  Melbourne weather\n'
-        print '  Temperature:  %s°C (at %s)' % (
-            parse_temperature(page[19]),
-            parse_time(page[19])
-        )
-        print '  Rain:         %smm since 09:00' % parse_rainfall(page[20])
-    else:
-        print 'The data received couldn\'t be understood'
+    print '\n  Melbourne weather\n'
+    try:
+        # Get the raw data from the Bureau Of Meteorology.
+        page = get_ftp_page('ftp://ftp2.bom.gov.au/anon/gen/fwo/IDA00101.html')
+        # Check that this page contains the the data for Melbourne.
+        header_regex = re.compile('Link to latest weather for Melbourne area')
+        if header_regex.search(page[18]):
+            print '  Temperature:  %s°C (at %s)' % (
+                parse_temperature(page[19]),
+                parse_time(page[19])
+            )
+            print '  Rain:         %smm since 09:00' % parse_rainfall(page[20])
+        else:
+            print 'The data received couldn\'t be understood'
+    except gaierror:
+        print '  The Bureau Of Meteorology server could not be contacted.'

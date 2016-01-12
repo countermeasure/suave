@@ -7,8 +7,11 @@ def file_contents(file_path):
     """
     Returns the contents of the file at `file_path`.
     """
-    with open(file_path, 'r') as f:
-        contents = f.read()
+    try:
+        with open(file_path, 'r') as f:
+            contents = f.read()
+    except IOError as e:
+        contents = '\n  %s' % e
 
     return contents
 

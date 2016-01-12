@@ -9,12 +9,15 @@ def random_line(file_path):
     """
     Returns a randomly-chosen list item from the YAML file at `file_path`.
     """
-    with open(file_path, 'r') as f:
-        contents = yaml.load(f.read())
+    try:
+        with open(file_path, 'r') as f:
+            contents = yaml.load(f.read())
+        item_no = random.randint(0, (len(contents) - 1))
+        line = contents[item_no]
+    except IOError as e:
+        line = '\n  %s' % e
 
-    item_no = random.randint(0, (len(contents) - 1))
-
-    return contents[item_no]
+    return line
 
 
 if __name__ == "__main__":
